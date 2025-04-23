@@ -1,0 +1,121 @@
+import type { Process } from "./types"
+
+export const initialProcesses: Process[] = [
+  {
+    id: "process-1",
+    name: "Kundenfeedback-Analyse",
+    status: "not-started",
+    totalItems: 5,
+    progress: 0,
+    paused: false,
+    messages: [],
+    createdAt: new Date().toISOString(),
+    targetDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "process-2",
+    name: "Produktbewertungen",
+    status: "in-progress",
+    totalItems: 10,
+    progress: 3,
+    paused: false,
+    messages: [
+      {
+        sender: "system",
+        content: "Bitte lade die Daten hoch.",
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "participant",
+        content: "3 Elemente sind erledigt.",
+        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "system",
+        content: "Sieben fehlen noch. Ich erinnere dich morgen.",
+        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      },
+    ],
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    startDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    targetDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "process-3",
+    name: "Support-Anfragen",
+    status: "in-progress",
+    totalItems: 8,
+    progress: 5,
+    paused: true,
+    messages: [
+      {
+        sender: "system",
+        content: "Bearbeitung der Support-Anfragen gestartet.",
+        timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "participant",
+        content: "5 von 8 Anfragen wurden bearbeitet.",
+        timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "system",
+        content: "Prozess wurde pausiert. Bitte setze die Bearbeitung fort, wenn möglich.",
+        timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    targetDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "process-4",
+    name: "Marktanalyse",
+    status: "completed",
+    totalItems: 3,
+    progress: 3,
+    paused: false,
+    messages: [
+      {
+        sender: "system",
+        content: "Marktanalyse gestartet.",
+        timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "participant",
+        content: "Erste Daten wurden analysiert.",
+        timestamp: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "system",
+        content: "Zweiter Datensatz wurde verarbeitet.",
+        timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "participant",
+        content: "Alle Daten wurden erfolgreich analysiert.",
+        timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        sender: "system",
+        content: "Marktanalyse abgeschlossen. Bericht wurde erstellt.",
+        timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    startDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    completionDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    targetDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "process-5",
+    name: "Neues Projekt",
+    status: "not-started",
+    totalItems: 7,
+    progress: 0,
+    paused: false,
+    messages: [],
+    createdAt: new Date().toISOString(),
+    targetDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+]
