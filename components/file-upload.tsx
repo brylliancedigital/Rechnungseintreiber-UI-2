@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
 import { Upload, X, FileText, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -43,7 +42,6 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
   }
 
   const validateFile = (file: File): boolean => {
-    // Check file type
     if (!allowedFileTypes.includes(file.type)) {
       const extension = file.name.substring(file.name.lastIndexOf(".")).toLowerCase()
       if (!allowedExtensions.includes(extension)) {
@@ -51,13 +49,10 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
         return false
       }
     }
-
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError("Die Datei ist zu groß. Maximale Größe: 5MB")
       return false
     }
-
     return true
   }
 
@@ -100,41 +95,22 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
     formData.append("processId", processId)
 
     try {
-      // Simulate upload progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval)
-            return 90
-          }
-          return prev + 10
-        })
-      }, 300)
+      const response = await fetch("https://rechnungseintreiber.onrender.com/upload", {
+        method: "POST",
+        body: formData,
+      })
 
-      // In a real application, you would use this endpoint
-      // const response = await fetch("https://dein-backend.render.com/upload", {
-      //   method: "POST",
-      //   body: formData,
-      // })
+      if (!response.ok) {
+        throw new Error("Upload fehlgeschlagen.")
+      }
 
-      // For demo purposes, we'll simulate a successful response after a delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const result = await response.json()
+      console.log("✅ Backend-Response:", result)
 
-      clearInterval(progressInterval)
       setUploadProgress(100)
+      setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_uploaded} Rechnungen importiert.`)
+      onFileUploaded(result.supabase_response)
 
-      // Simulate parsing the CSV/Excel file
-      // In a real application, this would come from the server response
-      const mockData = [
-        { mandant_phone: "+49123456789", invoice_number: "INV-2023-001", amount: 1250.5 },
-        { mandant_phone: "+49987654321", invoice_number: "INV-2023-002", amount: 750.25 },
-        { mandant_phone: "+49555666777", invoice_number: "INV-2023-003", amount: 2100.0 },
-      ]
-
-      setSuccess(`Datei erfolgreich hochgeladen. ${mockData.length} Rechnungen importiert.`)
-      onFileUploaded(mockData)
-
-      // Reset file after successful upload
       setTimeout(() => {
         setFile(null)
         setIsUploading(false)
@@ -189,7 +165,6 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
           className="hidden"
           disabled={isUploading}
         />
-
         <div className="flex flex-col items-center justify-center space-y-0.5">
           {file ? (
             <>
