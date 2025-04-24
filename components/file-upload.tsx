@@ -104,8 +104,19 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
         throw new Error("Upload fehlgeschlagen.")
       }
 
-      const result = await response.json()
-      console.log("✅ Backend-Response:", result)
+      const text = await response.text()
+      console.log("🧪 Upload-Response (raw):", text)
+      
+      let result
+      try {
+        result = JSON.parse(text)
+      } catch (err) {
+        console.error("❌ Antwort konnte nicht geparst werden:", err)
+        setError("Antwort vom Server ist ungültig.")
+        setIsUploading(false)
+        return
+      }
+      
 
       setUploadProgress(100)
       setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_uploaded} Rechnungen importiert.`)
