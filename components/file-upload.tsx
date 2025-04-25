@@ -85,28 +85,28 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
 
   const handleUpload = async () => {
     if (!file) return
-
+  
     setIsUploading(true)
     setUploadProgress(0)
     setError(null)
-
+  
     const formData = new FormData()
     formData.append("file", file)
     formData.append("processId", processId)
-
+  
     try {
       const response = await fetch("https://rechnungseintreiber.onrender.com/upload", {
         method: "POST",
         body: formData,
       })
-
+  
       if (!response.ok) {
-        throw new Error("Upload fehlgeschlagen.")
+        throw new Error("Upload fehlgeschlagen (HTTP-Fehler).")
       }
-
+  
       const text = await response.text()
       console.log("🧪 Upload-Response (raw):", text)
-      
+  
       let result
       try {
         result = JSON.parse(text)
@@ -116,22 +116,26 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
         setIsUploading(false)
         return
       }
-      
-
-      setUploadProgress(100)
-      setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_uploaded} Rechnungen importiert.`)
-      onFileUploaded(result.supabase_response)
-
+  
+      if (result.status === "success") {
+        setUploadProgress(100)
+        setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_detected} Rechnungen importiert.`)
+        onFileUploaded(result.preview) // Alternativ: result.supabase_response
+      } else {
+        throw new Error("Upload fehlgeschlagen (Server meldet keinen Erfolg).")
+      }
+  
       setTimeout(() => {
         setFile(null)
         setIsUploading(false)
       }, 2000)
     } catch (error) {
-      console.error("Upload error:", error)
+      console.error("❌ Upload error:", error)
       setError("Fehler beim Hochladen der Datei. Bitte versuchen Sie es erneut.")
       setIsUploading(false)
     }
   }
+  
 
   const handleCancel = () => {
     setFile(null)
