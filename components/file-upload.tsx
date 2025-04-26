@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 interface FileUploadProps {
   onFileUploaded: (data: any[]) => void
   processId: string
+  onStartProcess?: () => void
 }
 
 export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
@@ -20,6 +21,7 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [uploadedData, setUploadedData] = useState<any[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const allowedFileTypes = [
@@ -117,6 +119,7 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
         if (result.preview && Array.isArray(result.preview)) {
           try {
             onFileUploaded(result.preview);
+            setUploadedData(result.preview);
           } catch (onFileError) {
             console.error("❌ Fehler bei Verarbeitung der Vorschau:", onFileError);
             setError("Fehler bei der Verarbeitung der Vorschau.");
@@ -143,10 +146,7 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
       }, 2000);
     }
   };
-  
-  
-  
-
+ 
   const handleCancel = () => {
     setFile(null)
     setError(null)
@@ -227,6 +227,16 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
             Hochladen
           </Button>
         </div>
+      )}
+
+      {uploadedData && uploadedData.length > 0 && success && onStartProcess && (
+        <Button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-2"
+          size="sm"
+          onClick={onStartProcess}
+        >
+          Prozess starten ({uploadedData.length} Rechnungen)
+        </Button>
       )}
     </div>
   )
