@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Play,
   Pause,
@@ -13,44 +13,44 @@ import {
   Settings,
   ChevronRight,
   Calendar,
-} from "lucide-react"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-import { FileUpload } from "@/components/file-upload"
-import { EditableTable } from "@/components/editable-table"
-import { EditAgentModal } from "@/components/edit-agent-modal"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { formatDateToLocale } from "@/lib/utils"
+} from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { FileUpload } from "@/components/file-upload";
+import { EditableTable } from "@/components/editable-table";
+import { EditAgentModal } from "@/components/edit-agent-modal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { formatDateToLocale } from "@/lib/utils";
 
 export interface InvoiceData {
-  id?: string
-  mandant_phone: string
-  invoice_number: string
-  amount: number
-  isNew?: boolean
-  isEditing?: boolean
+  id?: string;
+  mandant_phone: string;
+  invoice_number: string;
+  amount: number;
+  isNew?: boolean;
+  isEditing?: boolean;
 }
 
 export interface AgentCardProps {
-  id: string
-  title: string
-  status: "not-started" | "in-progress" | "completed"
-  progress: number
-  totalItems: number
-  paused?: boolean
-  invoiceData?: InvoiceData[]
-  onEdit?: (id: string, data: any) => void
-  onDelete?: (id: string) => void
-  onPause?: (id: string) => void
-  onResume?: (id: string) => void
-  onComplete?: (id: string) => void
-  onStart?: (id: string, data: InvoiceData[]) => void
-  onSaveInvoiceData?: (id: string, data: InvoiceData[]) => void
-  onUpdateProgress?: (id: string, progress: number, total: number) => void
+  id: string;
+  title: string;
+  status: "not-started" | "in-progress" | "completed";
+  progress: number;
+  totalItems: number;
+  paused?: boolean;
+  invoiceData?: InvoiceData[];
+  onEdit?: (id: string, data: any) => void;
+  onDelete?: (id: string) => void;
+  onPause?: (id: string) => void;
+  onResume?: (id: string) => void;
+  onComplete?: (id: string) => void;
+  onStart?: (id: string, data: InvoiceData[]) => void;
+  onSaveInvoiceData?: (id: string, data: InvoiceData[]) => void;
+  onUpdateProgress?: (id: string, progress: number, total: number) => void;
 }
 
 export function AgentCard({
@@ -70,27 +70,27 @@ export function AgentCard({
   onSaveInvoiceData,
   onUpdateProgress,
 }: AgentCardProps) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedTitle, setEditedTitle] = useState(title)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [currentInvoiceData, setCurrentInvoiceData] = useState<InvoiceData[]>(invoiceData)
-  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
-  const titleInputRef = useRef<HTMLInputElement>(null)
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentInvoiceData, setCurrentInvoiceData] = useState<InvoiceData[]>(invoiceData);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
-  const currentTotalItems = currentInvoiceData.length || totalItems
-  const progressPercent = currentTotalItems > 0 ? Math.round((progress / currentTotalItems) * 100) : 0
+  const currentTotalItems = currentInvoiceData.length || totalItems;
+  const progressPercent = currentTotalItems > 0 ? Math.round((progress / currentTotalItems) * 100) : 0;
 
   useEffect(() => {
     if (isEditing && titleInputRef.current) {
-      titleInputRef.current.focus()
+      titleInputRef.current.focus();
     }
-  }, [isEditing])
+  }, [isEditing]);
 
   useEffect(() => {
-    setCurrentInvoiceData(invoiceData)
-  }, [invoiceData])
+    setCurrentInvoiceData(invoiceData);
+  }, [invoiceData]);
 
-  const prevInvoiceDataLengthRef = useRef(currentInvoiceData.length)
+  const prevInvoiceDataLengthRef = useRef(currentInvoiceData.length);
 
   useEffect(() => {
     if (
@@ -98,52 +98,52 @@ export function AgentCard({
       currentInvoiceData.length !== prevInvoiceDataLengthRef.current &&
       currentInvoiceData.length !== totalItems
     ) {
-      onUpdateProgress(id, progress, currentInvoiceData.length)
-      prevInvoiceDataLengthRef.current = currentInvoiceData.length
+      onUpdateProgress(id, progress, currentInvoiceData.length);
+      prevInvoiceDataLengthRef.current = currentInvoiceData.length;
     }
-  }, [currentInvoiceData.length, id, onUpdateProgress, progress, totalItems])
+  }, [currentInvoiceData.length, id, onUpdateProgress, progress, totalItems]);
 
   const handleTitleClick = () => {
     if (status !== "completed") {
-      setIsEditing(true)
+      setIsEditing(true);
     }
-  }
+  };
 
   const handleTitleSave = () => {
-    setIsEditing(false)
+    setIsEditing(false);
     if (onEdit && editedTitle !== title) {
-      onEdit(id, { title: editedTitle })
+      onEdit(id, { title: editedTitle });
     }
-  }
+  };
 
   const handleTitleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleTitleSave()
+      handleTitleSave();
     } else if (e.key === "Escape") {
-      setEditedTitle(title)
-      setIsEditing(false)
+      setEditedTitle(title);
+      setIsEditing(false);
     }
-  }
+  };
 
   const handleFileUploaded = (data: InvoiceData[]) => {
-    setCurrentInvoiceData(data)
-  }
+    setCurrentInvoiceData(data);
+  };
 
   const handleInvoiceDataChange = (data: InvoiceData[]) => {
-    setCurrentInvoiceData(data)
-  }
+    setCurrentInvoiceData(data);
+  };
 
   const handleSaveInvoiceData = () => {
     if (onSaveInvoiceData) {
-      onSaveInvoiceData(id, currentInvoiceData)
+      onSaveInvoiceData(id, currentInvoiceData);
     }
-  }
+  };
 
   const handleStartProcess = () => {
     if (onStart) {
-      onStart(id, currentInvoiceData)
+      onStart(id, currentInvoiceData);
     }
-  }
+  };
 
   const renderStatusBadge = () => {
     if (status === "completed") {
@@ -152,39 +152,39 @@ export function AgentCard({
           <CheckCircle className="h-3 w-3 mr-1" />
           Abgeschlossen
         </Badge>
-      )
+      );
     } else if (status === "not-started") {
       return (
         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs px-2 py-0.5">
           <Clock className="h-3 w-3 mr-1" />
           Nicht gestartet
         </Badge>
-      )
+      );
     } else if (paused) {
       return (
         <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs px-2 py-0.5">
           <AlertTriangle className="h-3 w-3 mr-1" />
           Pausiert
         </Badge>
-      )
+      );
     } else {
       return (
         <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs px-2 py-0.5">
           <Play className="h-3 w-3 mr-1" />
           Aktiv
         </Badge>
-      )
+      );
     }
-  }
+  };
 
   const getCardStyle = () => {
-    if (status === "completed") return "border-l-4 border-l-green-500"
+    if (status === "completed") return "border-l-4 border-l-green-500";
     if (status === "in-progress") {
-      if (paused) return "border-l-4 border-l-orange-500"
-      return "border-l-4 border-l-blue-500"
+      if (paused) return "border-l-4 border-l-orange-500";
+      return "border-l-4 border-l-blue-500";
     }
-    return "border-l-4 border-l-amber-500"
-  }
+    return "border-l-4 border-l-amber-500";
+  };
 
   return (
     <Card
@@ -236,7 +236,6 @@ export function AgentCard({
       </CardHeader>
 
       <CardContent className="pb-2 px-4 space-y-3">
-        {/* Status und Progress */}
         <div className="flex items-center justify-between gap-2">
           <div className="space-y-1.5 flex-1">
             <div className="flex justify-between items-center text-xs">
@@ -261,52 +260,51 @@ export function AgentCard({
           </div>
         </div>
 
-        {/* Deadline anzeigen */}
-        {status !== "completed" && (
-          <div className="flex items-center text-xs text-gray-500">
-            <Calendar className="h-3 w-3 mr-1" />
-            <span>Zieldatum: {formatDateToLocale(new Date()).split(",")[0]}</span>
-          </div>
-        )}
-
-        {/* File Upload */}
+        {/* Upload- oder Rechnungsdaten */}
         {status === "not-started" && (
           <div className="space-y-3">
             <FileUpload onFileUploaded={handleFileUploaded} processId={id} onStartProcess={handleStartProcess} />
             {currentInvoiceData.length > 0 && (
-              <div className="space-y-3 pt-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsInvoiceModalOpen(true)}
-                  className="w-full justify-between text-gray-600 hover:text-gray-800 text-xs py-1 border border-gray-100 hover:bg-gray-50"
-                >
-                  <span>Rechnungsdaten ({currentInvoiceData.length})</span>
-                  <ChevronRight className="h-3 w-3" />
-                </Button>
-                <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
-                  <DialogContent className="max-w-3xl">
-                    <DialogHeader>
-                      <DialogTitle>Rechnungsdaten bearbeiten: {title}</DialogTitle>
-                    </DialogHeader>
-                    <EditableTable
-                      data={currentInvoiceData}
-                      onDataChange={handleInvoiceDataChange}
-                      onSave={() => {
-                        handleSaveInvoiceData()
-                        setIsInvoiceModalOpen(false)
-                      }}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsInvoiceModalOpen(true)}
+                className="w-full justify-between text-xs py-1 border border-gray-100 hover:bg-gray-50"
+              >
+                <span>Rechnungsdaten ({currentInvoiceData.length})</span>
+                <ChevronRight className="h-3 w-3" />
+              </Button>
             )}
           </div>
         )}
+
+        {status !== "not-started" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsInvoiceModalOpen(true)}
+            className="w-full justify-between text-xs py-1 border border-gray-100 hover:bg-gray-50"
+          >
+            <span>Rechnungsdaten ({currentInvoiceData.length})</span>
+            <ChevronRight className="h-3 w-3" />
+          </Button>
+        )}
+
+        <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Rechnungsdaten: {title}</DialogTitle>
+            </DialogHeader>
+            <EditableTable
+              data={currentInvoiceData}
+              onDataChange={handleInvoiceDataChange}
+              onSave={handleSaveInvoiceData}
+            />
+          </DialogContent>
+        </Dialog>
       </CardContent>
 
       <CardFooter className="pt-2 px-4 pb-3">
-        {/* Wenn Status "nicht gestartet" ist → Upload + Start */}
         {status === "not-started" && currentInvoiceData.length > 0 && (
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
@@ -317,47 +315,21 @@ export function AgentCard({
           </Button>
         )}
 
-        {/* Wenn Status "laufend" ist → Pause/Fortsetzen + Löschen + Abschließen */}
         {status === "in-progress" && (
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex gap-2">
-              {paused ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => onResume?.(id)}
-                >
-                  <Play className="h-4 w-4 mr-2" />
-                  Fortsetzen
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => onPause?.(id)}
-                >
-                  <Pause className="h-4 w-4 mr-2" />
-                  Pausieren
-                </Button>
-              )}
-              <Button
-                variant="destructive"
-                size="sm"
-                className="flex-1"
-                onClick={() => onDelete?.(id)}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Löschen
+          <div className="flex flex-wrap gap-2 w-full">
+            {paused ? (
+              <Button variant="secondary" size="sm" className="flex-1" onClick={() => onResume?.(id)}>
+                <Play className="h-4 w-4 mr-1" /> Fortsetzen
               </Button>
-            </div>
-            <Button
-              variant="default"
-              size="sm"
-              className="w-full"
-              onClick={() => onComplete?.(id)}
-            >
+            ) : (
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => onPause?.(id)}>
+                <Pause className="h-4 w-4 mr-1" /> Pausieren
+              </Button>
+            )}
+            <Button variant="destructive" size="sm" className="flex-1" onClick={() => onDelete?.(id)}>
+              <Trash2 className="h-4 w-4 mr-1" /> Löschen
+            </Button>
+            <Button variant="default" size="sm" className="w-full" onClick={() => onComplete?.(id)}>
               Abschließen
             </Button>
           </div>
@@ -370,10 +342,10 @@ export function AgentCard({
         agentId={id}
         agentTitle={title}
         onSave={(data) => {
-          setIsEditModalOpen(false)
-          onEdit?.(id, data)
+          setIsEditModalOpen(false);
+          onEdit?.(id, data);
         }}
       />
     </Card>
-  )
+  );
 }
