@@ -84,50 +84,66 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
   }
 
   const handleUpload = async () => {
-    if (!file) return
+    if (!file) return;
   
-    setIsUploading(true)
-    setUploadProgress(0)
-    setError(null)
-    setSuccess(null)
+    setIsUploading(true);
+    setUploadProgress(0);
+    setError(null);
+    setSuccess(null);
   
-    const formData = new FormData()
-    formData.append("file", file)
-    formData.append("processId", processId)
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("processId", processId);
   
     try {
       const response = await fetch("https://rechnungseintreiber.onrender.com/upload", {
         method: "POST",
         body: formData,
-      })
+      });
+  
+      console.log("🌐 HTTP Response:", response);
   
       if (!response.ok) {
-        throw new Error(`Upload fehlgeschlagen (${response.status})`)
+        throw new Error(`Upload fehlgeschlagen (${response.status})`);
       }
   
-      const result = await response.json()
-      console.log("🧪 JSON Antwort vom Server:", result)
+      const result = await response.json();
+      console.log("🧪 JSON Antwort vom Server:", result);
   
-      if (result.status === "success" && result.preview && Array.isArray(result.preview) && result.preview.length > 0) {
-        setUploadProgress(100)
-        setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_detected} Rechnungen importiert.`)
-        onFileUploaded(result.preview)
+      if (result.status === "success") {
+        setUploadProgress(100);
+        setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_detected} Rechnungen importiert.`);
+  
+        if (result.preview && Array.isArray(result.preview)) {
+          try {
+            onFileUploaded(result.preview);
+          } catch (onFileError) {
+            console.error("❌ Fehler bei Verarbeitung der Vorschau:", onFileError);
+            setError("Fehler bei der Verarbeitung der Vorschau.");
+          }
+        } else {
+          console.warn("⚠️ Keine gültige Vorschau vorhanden.");
+          // Keine Vorschau verfügbar – trotzdem erfolgreich hochgeladen!
+        }
       } else {
-        setError(result.detail || "Server meldet Fehler oder keine gültige Vorschau.")
+        throw new Error(result.detail || "Server meldet Fehler.");
       }
-      
-  
-      setTimeout(() => {
-        setFile(null)
-        setIsUploading(false)
-      }, 2000)
   
     } catch (error) {
-      console.error("❌ Upload error:", error)
-      setError("Fehler beim Hochladen der Datei. Bitte versuchen Sie es erneut.")
-      setIsUploading(false)
+      console.error("❌ Upload error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Fehler beim Hochladen der Datei. Bitte versuchen Sie es erneut."
+      );
+    } finally {
+      setTimeout(() => {
+        setFile(null);
+        setIsUploading(false);
+      }, 2000);
     }
-  }
+  };
+  
   
   
 
