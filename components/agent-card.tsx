@@ -318,23 +318,43 @@ export function AgentCard({
         {status === "in-progress" && (
           <div className="flex flex-wrap gap-2 w-full">
             {paused ? (
-              <Button variant="secondary" size="sm" className="flex-1" onClick={() => onResume?.(id)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700"
+                onClick={() => onResume?.(id)}
+              >
                 <Play className="h-4 w-4 mr-1" /> Fortsetzen
               </Button>
             ) : (
-              <Button variant="outline" size="sm" className="flex-1" onClick={() => onPause?.(id)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700"
+                onClick={() => onPause?.(id)}
+              >
                 <Pause className="h-4 w-4 mr-1" /> Pausieren
               </Button>
             )}
-            <Button variant="destructive" size="sm" className="flex-1" onClick={() => onDelete?.(id)}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+              onClick={() => onDelete?.(id)}
+            >
               <Trash2 className="h-4 w-4 mr-1" /> Löschen
             </Button>
-            <Button variant="default" size="sm" className="w-full" onClick={() => onComplete?.(id)}>
+            <Button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              size="sm"
+              onClick={() => onComplete?.(id)}
+            >
               Abschließen
             </Button>
           </div>
         )}
       </CardFooter>
+
 
       <EditAgentModal
         isOpen={isEditModalOpen}
