@@ -305,36 +305,62 @@ export function AgentCard({
       </CardContent>
 
       <CardFooter className="pt-2 px-4 pb-3">
-        {status === "not-started" && currentInvoiceData.length > 0 && (
+  {status === "not-started" && currentInvoiceData.length > 0 && (
+    <Button
+      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+      size="sm"
+      onClick={handleStartProcess}
+    >
+      Speichern & Starten
+    </Button>
+  )}
+
+  {status === "in-progress" && (
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex gap-2">
+        {paused ? (
           <Button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            variant="outline"
             size="sm"
-            onClick={handleStartProcess}
+            className="flex-1 border border-green-300 text-green-600 hover:bg-green-50 hover:border-green-400"
+            onClick={() => onResume?.(id)}
           >
-            Speichern & Starten
+            <Play className="h-4 w-4 mr-2" />
+            Fortsetzen
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1 border border-amber-300 text-amber-600 hover:bg-amber-50 hover:border-amber-400"
+            onClick={() => onPause?.(id)}
+          >
+            <Pause className="h-4 w-4 mr-2" />
+            Pausieren
           </Button>
         )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 border border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+          onClick={() => onDelete?.(id)}
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Löschen
+        </Button>
+      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full border border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400"
+        onClick={() => onComplete?.(id)}
+      >
+        Abschließen
+      </Button>
+    </div>
+  )}
+</CardFooter>
 
-        {status === "in-progress" && (
-          <div className="flex flex-wrap gap-2 w-full">
-            {paused ? (
-              <Button variant="secondary" size="sm" className="flex-1" onClick={() => onResume?.(id)}>
-                <Play className="h-4 w-4 mr-1" /> Fortsetzen
-              </Button>
-            ) : (
-              <Button variant="outline" size="sm" className="flex-1" onClick={() => onPause?.(id)}>
-                <Pause className="h-4 w-4 mr-1" /> Pausieren
-              </Button>
-            )}
-            <Button variant="destructive" size="sm" className="flex-1" onClick={() => onDelete?.(id)}>
-              <Trash2 className="h-4 w-4 mr-1" /> Löschen
-            </Button>
-            <Button variant="default" size="sm" className="w-full" onClick={() => onComplete?.(id)}>
-              Abschließen
-            </Button>
-          </div>
-        )}
-      </CardFooter>
 
       <EditAgentModal
         isOpen={isEditModalOpen}
