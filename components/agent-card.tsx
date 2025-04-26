@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from "react";
@@ -324,7 +325,8 @@ export function AgentCard({
                 className="flex-1 text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700"
                 onClick={() => onResume?.(id)}
               >
-                <Play className="h-4 w-4 mr-1" /> Fortsetzen
+                <Play className="h-4 w-4 mr-1" />
+                Fortsetzen
               </Button>
             ) : (
               <Button
@@ -333,7 +335,8 @@ export function AgentCard({
                 className="flex-1 text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700"
                 onClick={() => onPause?.(id)}
               >
-                <Pause className="h-4 w-4 mr-1" /> Pausieren
+                <Pause className="h-4 w-4 mr-1" />
+                Pausieren
               </Button>
             )}
             <Button
@@ -342,7 +345,8 @@ export function AgentCard({
               className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
               onClick={() => onDelete?.(id)}
             >
-              <Trash2 className="h-4 w-4 mr-1" /> Löschen
+              <Trash2 className="h-4 w-4 mr-1" />
+              Löschen
             </Button>
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
@@ -354,7 +358,6 @@ export function AgentCard({
           </div>
         )}
       </CardFooter>
-
 
       <EditAgentModal
         isOpen={isEditModalOpen}
