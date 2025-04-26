@@ -306,10 +306,61 @@ export function AgentCard({
       </CardContent>
 
       <CardFooter className="pt-2 px-4 pb-3">
+        {/* Wenn Status "nicht gestartet" ist → Upload + Start */}
         {status === "not-started" && currentInvoiceData.length > 0 && (
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm" onClick={handleStartProcess}>
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
+            onClick={handleStartProcess}
+          >
             Speichern & Starten
           </Button>
+        )}
+
+        {/* Wenn Status "laufend" ist → Pause/Fortsetzen + Löschen + Abschließen */}
+        {status === "in-progress" && (
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex gap-2">
+              {paused ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => onResume?.(id)}
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  Fortsetzen
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => onPause?.(id)}
+                >
+                  <Pause className="h-4 w-4 mr-2" />
+                  Pausieren
+                </Button>
+              )}
+              <Button
+                variant="destructive"
+                size="sm"
+                className="flex-1"
+                onClick={() => onDelete?.(id)}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Löschen
+              </Button>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              className="w-full"
+              onClick={() => onComplete?.(id)}
+            >
+              Abschließen
+            </Button>
+          </div>
         )}
       </CardFooter>
 
