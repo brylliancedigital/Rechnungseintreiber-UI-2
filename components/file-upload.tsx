@@ -89,6 +89,7 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
     setIsUploading(true)
     setUploadProgress(0)
     setError(null)
+    setSuccess(null)
   
     const formData = new FormData()
     formData.append("file", file)
@@ -101,40 +102,33 @@ export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
       })
   
       if (!response.ok) {
-        throw new Error("Upload fehlgeschlagen (HTTP-Fehler).")
+        throw new Error(`Upload fehlgeschlagen (${response.status})`)
       }
   
-      const text = await response.text()
-      console.log("🧪 Upload-Response (raw):", text)
+      const result = await response.json()
+      console.log("🧪 JSON Antwort vom Server:", result)
   
-      let result
-      try {
-        result = JSON.parse(text)
-      } catch (err) {
-        console.error("❌ Antwort konnte nicht geparst werden:", err)
-        setError("Antwort vom Server ist ungültig.")
-        setIsUploading(false)
-        return
-      }
-  
-      if (result.status === "success") {
+      if (result.status === "success" && result.preview && Array.isArray(result.preview) && result.preview.length > 0) {
         setUploadProgress(100)
         setSuccess(`Datei erfolgreich hochgeladen. ${result.rows_detected} Rechnungen importiert.`)
-        onFileUploaded(result.preview) // Alternativ: result.supabase_response
+        onFileUploaded(result.preview)
       } else {
-        throw new Error("Upload fehlgeschlagen (Server meldet keinen Erfolg).")
+        setError(result.detail || "Server meldet Fehler oder keine gültige Vorschau.")
       }
+      
   
       setTimeout(() => {
         setFile(null)
         setIsUploading(false)
       }, 2000)
+  
     } catch (error) {
       console.error("❌ Upload error:", error)
       setError("Fehler beim Hochladen der Datei. Bitte versuchen Sie es erneut.")
       setIsUploading(false)
     }
   }
+  
   
 
   const handleCancel = () => {
