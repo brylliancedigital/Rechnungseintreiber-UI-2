@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
 import {
   Play,
@@ -75,11 +74,9 @@ export function AgentCard({
   const [editedTitle, setEditedTitle] = useState(title)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [currentInvoiceData, setCurrentInvoiceData] = useState<InvoiceData[]>(invoiceData)
-  const [isTableExpanded, setIsTableExpanded] = useState(false)
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
-  // Calculate progress based on the current invoice data
   const currentTotalItems = currentInvoiceData.length || totalItems
   const progressPercent = currentTotalItems > 0 ? Math.round((progress / currentTotalItems) * 100) : 0
 
@@ -93,12 +90,9 @@ export function AgentCard({
     setCurrentInvoiceData(invoiceData)
   }, [invoiceData])
 
-  // Update progress when invoice data changes
   const prevInvoiceDataLengthRef = useRef(currentInvoiceData.length)
 
   useEffect(() => {
-    // Only update if the length has actually changed from the previous render
-    // and is different from the totalItems prop
     if (
       onUpdateProgress &&
       currentInvoiceData.length !== prevInvoiceDataLengthRef.current &&
@@ -133,7 +127,6 @@ export function AgentCard({
 
   const handleFileUploaded = (data: InvoiceData[]) => {
     setCurrentInvoiceData(data)
-    setIsTableExpanded(true)
   }
 
   const handleInvoiceDataChange = (data: InvoiceData[]) => {
@@ -184,7 +177,6 @@ export function AgentCard({
     }
   }
 
-  // Bestimme die Hintergrundfarbe basierend auf dem Status
   const getCardStyle = () => {
     if (status === "completed") return "border-l-4 border-l-green-500"
     if (status === "in-progress") {
@@ -255,10 +247,7 @@ export function AgentCard({
             </div>
             <Progress
               value={progressPercent}
-              className={cn(
-                "h-1.5 rounded-full",
-                status === "completed" ? "bg-green-100" : status === "in-progress" ? "bg-blue-100" : "bg-amber-100",
-              )}
+              className="h-1.5 rounded-full"
               indicatorClassName={cn(
                 status === "completed"
                   ? "bg-green-600"
@@ -280,11 +269,10 @@ export function AgentCard({
           </div>
         )}
 
-        {/* File upload for not-started processes */}
+        {/* File Upload */}
         {status === "not-started" && (
           <div className="space-y-3">
-            <FileUpload onFileUploaded={handleFileUploaded} processId={id} />
-
+            <FileUpload onFileUploaded={handleFileUploaded} processId={id} onStartProcess={handleStartProcess} />
             {currentInvoiceData.length > 0 && (
               <div className="space-y-3 pt-2">
                 <Button
@@ -296,7 +284,6 @@ export function AgentCard({
                   <span>Rechnungsdaten ({currentInvoiceData.length})</span>
                   <ChevronRight className="h-3 w-3" />
                 </Button>
-
                 <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
                   <DialogContent className="max-w-3xl">
                     <DialogHeader>
@@ -316,61 +303,6 @@ export function AgentCard({
             )}
           </div>
         )}
-
-        {/* Collapsible table for in-progress processes */}
-        {status === "in-progress" && (
-          <div className="space-y-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsInvoiceModalOpen(true)}
-              className="w-full justify-between text-gray-600 hover:text-gray-800 text-xs py-1 border border-gray-100 hover:bg-gray-50"
-            >
-              <span>Rechnungsdaten ({currentInvoiceData.length})</span>
-              <ChevronRight className="h-3 w-3" />
-            </Button>
-
-            <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
-              <DialogContent className="max-w-3xl">
-                <DialogHeader>
-                  <DialogTitle>Rechnungsdaten bearbeiten: {title}</DialogTitle>
-                </DialogHeader>
-                <EditableTable
-                  data={currentInvoiceData}
-                  onDataChange={handleInvoiceDataChange}
-                  onSave={() => {
-                    handleSaveInvoiceData()
-                    setIsInvoiceModalOpen(false)
-                  }}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
-
-        {/* Read-only table for completed processes */}
-        {status === "completed" && currentInvoiceData.length > 0 && (
-          <div className="space-y-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsInvoiceModalOpen(true)}
-              className="w-full justify-between text-gray-600 hover:text-gray-800 text-xs py-1 border border-gray-100 hover:bg-gray-50"
-            >
-              <span>Rechnungsdaten ({currentInvoiceData.length})</span>
-              <ChevronRight className="h-3 w-3" />
-            </Button>
-
-            <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
-              <DialogContent className="max-w-3xl">
-                <DialogHeader>
-                  <DialogTitle>Rechnungsdaten: {title}</DialogTitle>
-                </DialogHeader>
-                <EditableTable data={currentInvoiceData} onDataChange={handleInvoiceDataChange} isReadOnly={true} />
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
       </CardContent>
 
       <CardFooter className="pt-2 px-4 pb-3">
@@ -378,46 +310,6 @@ export function AgentCard({
           <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm" onClick={handleStartProcess}>
             Speichern & Starten
           </Button>
-        )}
-
-        {status === "in-progress" && (
-          <div className="flex flex-wrap justify-between gap-2 w-full">
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn("flex-1", paused ? "text-green-600 hover:bg-green-50" : "text-amber-600 hover:bg-amber-50")}
-              onClick={() => (paused ? onResume?.(id) : onPause?.(id))}
-            >
-              {paused ? (
-                <>
-                  <Play className="h-3.5 w-3.5 mr-1" />
-                  Fortsetzen
-                </>
-              ) : (
-                <>
-                  <Pause className="h-3.5 w-3.5 mr-1" />
-                  Pausieren
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 text-red-600 hover:bg-red-50"
-              onClick={() => onDelete?.(id)}
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              Löschen
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 text-blue-600 hover:bg-blue-50"
-              onClick={() => onComplete?.(id)}
-            >
-              Abschließen
-            </Button>
-          </div>
         )}
       </CardFooter>
 
