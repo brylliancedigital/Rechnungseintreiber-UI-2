@@ -13,8 +13,8 @@ interface FileUploadProps {
   processId: string
   onStartProcess?: () => void
 }
-
-export function FileUpload({ onFileUploaded, processId }: FileUploadProps) {
+export function FileUpload({ onFileUploaded, processId, onStartProcess }: FileUploadProps)
+ {
   const [isDragging, setIsDragging] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
