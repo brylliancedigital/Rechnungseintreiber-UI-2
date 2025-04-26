@@ -349,12 +349,15 @@ export function AgentCard({
               Löschen
             </Button>
             <Button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              size="sm"
-              onClick={() => onComplete?.(id)}
-            >
-              Abschließen
-            </Button>
+                variant="outline"
+                size="sm"
+                className="flex-1 text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                onClick={() => onComplete?.(id)}
+              >
+                Abschließen
+              </Button>
+
+
           </div>
         )}
       </CardFooter>
